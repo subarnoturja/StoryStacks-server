@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
@@ -29,7 +29,7 @@ async function run() {
     // Database Collection
     const booksCollection = client.db('StoryStacks').collection('books')
 
-    // Insert new book
+    // Insert a New Book
     app.post("/upload-book", async(req, res) => {
         const data = req.body;
         const result = await booksCollection.insertOne(data);
@@ -40,6 +40,21 @@ async function run() {
     app.get('/all-books', async(req, res) => {
         const books = await booksCollection.find();
         const result = await books.toArray();
+        res.send(result);
+    })
+
+    // Update Book Data
+    app.patch('/book/:id', async(req, res) => {
+        const id = req.params.id;
+        const bookData = req.body;
+        const filter = { _id: new ObjectId(id) };
+        const options = { upsert: true };
+        const updateBookData = {
+            $set: {
+                ...bookData
+            }
+        }
+        const result = await booksCollection.updateOne(filter, updateBookData, options);
         res.send(result);
     })
 
