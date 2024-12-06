@@ -36,13 +36,6 @@ async function run() {
         res.send(result);
     })
 
-    // Get All Books
-    app.get('/all-books', async(req, res) => {
-        const books = await booksCollection.find();
-        const result = await books.toArray();
-        res.send(result);
-    })
-
     // Update Book Data
     app.patch('/book/:id', async(req, res) => {
         const id = req.params.id;
@@ -63,6 +56,16 @@ async function run() {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
         const result = await booksCollection.deleteOne(filter);
+        res.send(result);
+    })
+
+    // Find By Category
+    app.get('/all-books', async(req, res) => {
+        let query = {};
+        if(req.query?.category){
+            query = {category: req.query.category}
+        }
+        const result = await booksCollection.find(query).toArray();
         res.send(result);
     })
 
