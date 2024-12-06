@@ -36,7 +36,12 @@ async function run() {
         res.send(result);
     })
 
-    
+    // Get All Books
+    app.get('/all-books', async(req, res) => {
+        const books = await booksCollection.find();
+        const result = await books.toArray();
+        res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
