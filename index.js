@@ -29,6 +29,13 @@ async function run() {
     // Database Collection
     const booksCollection = client.db('StoryStacks').collection('books')
 
+    // Insert new book
+    app.post("/upload-book", async(req, res) => {
+        const data = req.body;
+        const result = await booksCollection.insertOne(data);
+        res.send(result);
+    })
+
     
 
     // Send a ping to confirm a successful connection
